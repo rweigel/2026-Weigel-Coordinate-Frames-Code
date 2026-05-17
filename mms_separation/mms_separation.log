@@ -1,0 +1,129 @@
+4.5 miles (7.24 km) separation => 7.40e-03 deg at 8.79 R_E
+
+CDAWeb GSE (MMSi_MEC_SRVY_L2_EPHT89D)
+  MMS1 mean distance: 8.79 R_E
+    Minimum distance from centroid: 4.04 km
+  MMS2 mean distance: 8.79 R_E
+    Minimum distance from centroid: 2.98 km
+  MMS3 mean distance: 8.79 R_E
+    Minimum distance from centroid: 3.07 km
+  MMS4 mean distance: 8.79 R_E
+    Minimum distance from centroid: 3.99 km
+  MMS1-MMS2
+    Minimum separation distance and angle: 6.00 km and 6.13e-03 deg
+  MMS1-MMS3
+    Minimum separation distance and angle: 6.07 km and 6.20e-03 deg
+  MMS1-MMS4
+    Minimum separation distance and angle: 2.21 km and 2.25e-03 deg
+  MMS2-MMS3
+    Minimum separation distance and angle: 4.59 km and 4.69e-03 deg
+  MMS2-MMS4
+    Minimum separation distance and angle: 5.54 km and 5.66e-03 deg
+  MMS3-MMS4
+    Minimum separation distance and angle: 5.72 km and 5.84e-03 deg
+  Writing: /Users/rweigel/git/2026-Weigel-Coordinate-Frames-Code/../2026-Weigel-Coordinate-Frames-Data/mms_separation/figures/mms_separation_CDAWeb_GSE_MMSi_MEC_SRVY_L2_EPHT89D.pdf
+  Writing: /Users/rweigel/git/2026-Weigel-Coordinate-Frames-Code/../2026-Weigel-Coordinate-Frames-Data/mms_separation/figures/svg/mms_separation_CDAWeb_GSE_MMSi_MEC_SRVY_L2_EPHT89D.svg
+  Writing: /Users/rweigel/git/2026-Weigel-Coordinate-Frames-Code/../2026-Weigel-Coordinate-Frames-Data/mms_separation/figures/png/mms_separation_CDAWeb_GSE_MMSi_MEC_SRVY_L2_EPHT89D.png
+
+SSCWeb GSE
+  MMS1 mean distance: 8.79 R_E
+    Minimum distance from centroid: 3.96 km
+  MMS2 mean distance: 8.79 R_E
+    Minimum distance from centroid: 2.91 km
+  MMS3 mean distance: 8.79 R_E
+    Minimum distance from centroid: 3.02 km
+  MMS4 mean distance: 8.79 R_E
+    Minimum distance from centroid: 3.95 km
+  MMS1-MMS2
+    Minimum separation distance and angle: 5.96 km and 6.09e-03 deg
+  MMS1-MMS3
+    Minimum separation distance and angle: 5.94 km and 6.07e-03 deg
+  MMS1-MMS4
+    Minimum separation distance and angle: 2.17 km and 2.22e-03 deg
+  MMS2-MMS3
+    Minimum separation distance and angle: 4.52 km and 4.62e-03 deg
+  MMS2-MMS4
+    Minimum separation distance and angle: 5.48 km and 5.60e-03 deg
+  MMS3-MMS4
+    Minimum separation distance and angle: 5.64 km and 5.76e-03 deg
+  Writing: /Users/rweigel/git/2026-Weigel-Coordinate-Frames-Code/../2026-Weigel-Coordinate-Frames-Data/mms_separation/figures/mms_separation_SSCWeb_GSE.pdf
+  Writing: /Users/rweigel/git/2026-Weigel-Coordinate-Frames-Code/../2026-Weigel-Coordinate-Frames-Data/mms_separation/figures/svg/mms_separation_SSCWeb_GSE.svg
+  Writing: /Users/rweigel/git/2026-Weigel-Coordinate-Frames-Code/../2026-Weigel-Coordinate-Frames-Data/mms_separation/figures/png/mms_separation_SSCWeb_GSE.png
+
+First few timestamps and positions for each source:
+
+----------------------------------------
+MMS1
+----------------------------------------
+CDAWeb GSE MEC_SRVY_L2_EPHT89D:
+                                      x             y           z
+2016-09-14 00:00:00+00:00 -22118.140774  70686.024097  697.961781
+2016-09-14 00:00:30+00:00 -22141.424455  70662.700850  705.426777
+2016-09-14 00:01:00+00:00 -22164.688848  70639.315515  712.891154
+2016-09-14 00:01:30+00:00 -22187.933966  70615.867953  720.354913
+2016-09-14 00:02:00+00:00 -22211.159721  70592.358211  727.818028
+
+SSCWeb GSE:
+                                      x             y           z
+2016-09-14 00:00:30+00:00 -22143.886301  70661.892766  705.409365
+2016-09-14 00:01:30+00:00 -22190.491604  70615.057077  720.252685
+2016-09-14 00:02:30+00:00 -22236.860837  70567.986783  735.198200
+2016-09-14 00:03:30+00:00 -22283.191637  70520.649244  750.026127
+2016-09-14 00:04:30+00:00 -22329.583678  70473.042122  764.960043
+
+----------------------------------------
+MMS2
+----------------------------------------
+CDAWeb GSE MEC_SRVY_L2_EPHT89D:
+                                      x             y           z
+2016-09-14 00:00:00+00:00 -22125.497360  70681.945045  705.383046
+2016-09-14 00:00:30+00:00 -22148.785966  70658.622258  712.847165
+2016-09-14 00:01:00+00:00 -22172.055287  70635.237354  720.310650
+2016-09-14 00:01:30+00:00 -22195.305237  70611.790326  727.773493
+2016-09-14 00:02:00+00:00 -22218.535896  70588.281100  735.235710
+
+SSCWeb GSE:
+                                      x             y           z
+2016-09-14 00:00:30+00:00 -22151.271093  70657.818654  712.738052
+2016-09-14 00:01:30+00:00 -22197.783692  70611.040488  727.709281
+2016-09-14 00:02:30+00:00 -22244.253315  70563.964335  742.658589
+2016-09-14 00:03:30+00:00 -22290.578354  70516.587481  757.578391
+2016-09-14 00:04:30+00:00 -22336.876949  70469.024679  772.418827
+
+----------------------------------------
+MMS3
+----------------------------------------
+CDAWeb GSE MEC_SRVY_L2_EPHT89D:
+                                      x             y           z
+2016-09-14 00:00:00+00:00 -22120.807356  70692.528649  704.200076
+2016-09-14 00:00:30+00:00 -22144.085279  70669.218155  711.661093
+2016-09-14 00:01:00+00:00 -22167.344024  70645.845408  719.121505
+2016-09-14 00:01:30+00:00 -22190.583467  70622.410520  726.581283
+2016-09-14 00:02:00+00:00 -22213.803575  70598.913489  734.040419
+
+SSCWeb GSE:
+                                      x             y           z
+2016-09-14 00:00:30+00:00 -22146.564941  70668.407337  711.532505
+2016-09-14 00:01:30+00:00 -22193.077415  70621.629115  726.503734
+2016-09-14 00:02:30+00:00 -22239.546912  70574.552907  741.453042
+2016-09-14 00:03:30+00:00 -22285.870647  70527.176171  756.372845
+2016-09-14 00:04:30+00:00 -22332.183692  70479.704033  771.253108
+
+----------------------------------------
+MMS4
+----------------------------------------
+CDAWeb GSE MEC_SRVY_L2_EPHT89D:
+                                      x             y           z
+2016-09-14 00:00:00+00:00 -22114.999800  70686.607617  706.966532
+2016-09-14 00:00:30+00:00 -22138.284559  70663.283620  714.428579
+2016-09-14 00:01:00+00:00 -22161.550037  70639.897523  721.889998
+2016-09-14 00:01:30+00:00 -22184.796231  70616.449222  729.350792
+2016-09-14 00:02:00+00:00 -22208.023082  70592.938772  736.810938
+
+SSCWeb GSE:
+                                      x             y           z
+2016-09-14 00:00:30+00:00 -22140.838969  70662.481657  714.405767
+2016-09-14 00:01:30+00:00 -22187.339392  70615.621132  729.340961
+2016-09-14 00:02:30+00:00 -22233.714427  70568.590203  744.194601
+2016-09-14 00:03:30+00:00 -22280.046259  70521.251515  759.024716
+2016-09-14 00:04:30+00:00 -22326.438335  70473.636463  773.952651
