@@ -8,10 +8,10 @@ install_requires = [
   'hapiclient',
   'hapiplot',
   'sunpy>=6.1.0', # https://github.com/sunpy/sunpy/pull/8193
-  'datetick @ git+https://github.com/rweigel/datetick',
-  'hxform @ git+https://github.com/rweigel/hxform',
-  'utilrsw[time] @ git+https://github.com/rweigel/utilrsw',
-  'utilrsw[mpl] @ git+https://github.com/rweigel/utilrsw'
+  'datetick @ git+https://github.com/rweigel/datetick@main',
+  'hxform @ git+https://github.com/rweigel/hxform@main',
+  'utilrsw[time] @ git+https://github.com/rweigel/utilrsw@main',
+  'utilrsw[mpl] @ git+https://github.com/rweigel/utilrsw@main'
 ]
 
 

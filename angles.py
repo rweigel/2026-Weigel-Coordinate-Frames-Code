@@ -203,7 +203,7 @@ def _config():
   delta_str = f'{delta[delta_unit]}{delta_unit}'
 
   run_str = f'{axis}-delta={delta_str}_{to_str}-{tf_str}'
-  dir_table = os.path.join(CFG['cache_dir'], 'figures', 'angles', run_str)
+  dir_table = os.path.join(CFG['cache_dir'], 'angles', 'figures', run_str)
   file_out = os.path.join(CFG['cache_dir'], 'angles', f'{run_str}.pkl')
 
   print(f'Run id = {run_id}')
