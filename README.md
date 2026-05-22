@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1241504388.svg)](https://doi.org/10.5281/zenodo.20347420)
+
 Software used for "Coordinate Systems and Transforms in Space Physics: Terms, Definitions, Implementations, and Recommendations for Reproducibility by
 R.S. Weigel, A.Y. Shih, R. Ringuette, I. Christopher, S.M. Petrinec, S. Turner, R.M. Candey, G.K. Stephens, B. Cecconi (https://arxiv.org/abs/2601.07605).
 
