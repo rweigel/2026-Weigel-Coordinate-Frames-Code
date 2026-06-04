@@ -44,8 +44,8 @@ def _infos(satellite):
 
     sc = f'cluster{satellite[-1]}'
     dataset = f'C{satellite[-1]}_CP_FGM_5VPS'
-    start = '2010-09-01T09:09:00.100Z'
-    stop  = '2010-09-02T00:00:00.000Z'
+    start = '2013-09-19T00:00:00.000Z'
+    stop  = '2013-09-20T00:00:00.000Z'
 
     for frame in ['GSE', 'GSM']:
 

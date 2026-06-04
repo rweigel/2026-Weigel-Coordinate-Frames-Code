@@ -230,18 +230,18 @@ def _plot_diffs(ax, t, r_ave, Δr, Δθ, R_E):
 def _figprep():
   from matplotlib import pyplot as plt
 
-  plt.gcf().set_size_inches(CFG['plot_opts']['figsize_inches'])
-  gs = plt.gcf().add_gridspec(2)
+  fig = plt.figure(figsize=CFG['plot_opts']['figsize_inches'])
+  gs = fig.add_gridspec(2)
   axes = gs.subplots(sharex=True)
 
   for ax in axes:
     ax.grid(which='minor', linestyle=':', linewidth=0.5, color=[0.75]*3)
     ax.minorticks_on()
 
-  return axes
+  return fig, axes
 
 
-def _savefigs(fname):
+def _savefigs(fig, fname):
   import os
   from matplotlib import pyplot as plt
 
@@ -259,15 +259,15 @@ def _savefigs(fname):
       fname_full = f'{base}/{fmt}/{fname}.{fmt}'
     os.makedirs(os.path.dirname(fname_full), exist_ok=True)
     print(f"  Writing {os.path.relpath(fname_full)}")
-    plt.savefig(fname_full, bbox_inches=bbox_inches)
-  plt.close()
+    fig.savefig(fname_full, bbox_inches=bbox_inches)
+  plt.close(fig)
 
 
 def _plot(satellite, info1, info2, opts):
 
   from datetick import datetick
 
-  axes = _figprep()
+  fig, axes = _figprep()
 
   title = f"{satellite} {info1['name']}/{info1['frame']} "
   title += f"vs. {info2['name']}/{info2['frame']}"
@@ -291,7 +291,7 @@ def _plot(satellite, info1, info2, opts):
 
   datetick('x', adjust_first_xlabel=True, adjust_last_xlabel=True)
 
-  _savefigs(fname)
+  _savefigs(fig, fname)
 
 
 def plot_combos(satellite, sources, opts):
