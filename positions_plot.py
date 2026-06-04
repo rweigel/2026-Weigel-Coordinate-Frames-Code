@@ -195,6 +195,7 @@ def _plot_xyz(ax, info1, info2, t, r_ave):
   ax.annotate('$\\overline{r}$',
               xy=(0.07, 0.08), xycoords='axes fraction',
               va='center', ha='left',
+              fontsize=CFG['plot_opts']['fontsize'],
               bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none'))
 
   ax.set_xticklabels([])
@@ -257,7 +258,7 @@ def _savefigs(fname):
     else:
       fname_full = f'{base}/{fmt}/{fname}.{fmt}'
     os.makedirs(os.path.dirname(fname_full), exist_ok=True)
-    print(f"  Writing {fname_full}")
+    print(f"  Writing {os.path.relpath(fname_full)}")
     plt.savefig(fname_full, bbox_inches=bbox_inches)
   plt.close()
 
@@ -319,9 +320,13 @@ if __name__ == "__main__":
   try:
     results = utilrsw.read(f'{base}.pkl')
   except:
-    msg = f"No cached data found at {base}.pkl. Run positions.py --satellites "
-    msg += f"{','.join(args.satellites)} to generate the data before plotting."
-    print(msg)
+    if args.satellites == CFG['known_satellites']:
+      msg = f"No cached data found at {base}.pkl. Run python positions.py to generate the data before plotting."
+      print(msg)
+    else:
+      msg = f"No cached data found at {base}.pkl. Run python positions.py --satellites "
+      msg += f"{','.join(args.satellites)} to generate the data before plotting."
+      print(msg)
     exit(1)
 
   for satellite in args.satellites:

@@ -1,11 +1,12 @@
 import os
 import numpy
+
 import utilrsw
+from config import CFG
 
 axis = 'z'
 run = f'{axis}-delta=1days_20100101-20150101'
 
-from config import CFG
 in_file = os.path.join(CFG['cache_dir'],'angles', f'{run}.pkl')
 out_dir = os.path.join(CFG['cache_dir'],'angles', 'figures', run)
 
@@ -123,4 +124,4 @@ for transform_key in list(data.keys()):
   print(f"Plotting {transform_key}")
   plot(df, tranform_str)
 
-  utilrsw.mpl.savefig(f'{transform_key}', fdir=out_dir, subdirs=['svg', 'png'], bbox_inches='tight')
+  utilrsw.mpl.savefig(f'{transform_key}', fdir=out_dir, subdirs=['svg', 'png'])
