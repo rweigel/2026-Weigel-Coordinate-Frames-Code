@@ -1,5 +1,6 @@
 import os
 import sys
+
 import pandas
 import numpy as np
 
@@ -48,7 +49,7 @@ def report(sc, times, positions, title, fname):
 
 def plot(sc, times, separations, labels, title, fname):
   from matplotlib import pyplot as plt
-  from hapiplot.plot.datetick import datetick
+  from datetick import datetick
 
   for time, separation, label in zip(times, separations, labels):
     plt.plot(time, separation, label=label)
@@ -57,7 +58,7 @@ def plot(sc, times, separations, labels, title, fname):
   plt.ylabel('Separation Distance (km)')
   plt.grid()
   plt.legend()
-  datetick(dir='x')
+  datetick('x')
 
   writefig(sc, fname)
   plt.close()
@@ -71,12 +72,12 @@ def writefig(sc, fname):
     subdir = fmt
     if fmt == 'pdf':
       subdir = ''
-    fname_full = os.path.join(CFG['cache_dir'], f'{sc.lower()}_separation', 'figures', subdir, fname)
+    fname_full = os.path.join(CFG['cache_dir'], 'separation', sc.lower(), 'figures', subdir, fname)
 
     if not os.path.exists(os.path.dirname(fname_full)):
       os.makedirs(os.path.dirname(fname_full))
 
-    hxform.xprint(f'  Writing: {fname_full}.{fmt}')
+    hxform.xprint(f'  Writing: {os.path.relpath(fname_full)}.{fmt}')
     if fmt == 'png':
       plt.savefig(f'{fname_full}', dpi=300)
     else:
@@ -89,15 +90,111 @@ opts  = {
   'cachedir': os.path.join(CFG['cache_dir'], 'positions', 'hapi')
 }
 
+def _cdaweb(sc, start, stop, frame):
 
-server = 'https://cdaweb.gsfc.nasa.gov/hapi'
+  server = 'https://cdaweb.gsfc.nasa.gov/hapi'
 
-#frame = 'GSM'
-#frame_cdaweb = 'ECI'
-frame_cdaweb = 'GSE'
+  if sc == 'MMS':
+    dataset_suffix = 'MEC_SRVY_L2_EPHT89D'
+    parameters_suffix = f'mec_r_{frame.lower()}'
 
-#sc = 'Cluster'
-sc = 'MMS'
+    # EPD data has time stamps that differ between s/c
+    #dataset = f'{sc.upper()}_EPD-EIS_SRVY_L2_ELECTRONENERGY'
+    #parameters = f'{sc}_epd_eis_srvy_l2_electronenergy_position_{frame_cdaweb.lower()}'
+
+  if sc == 'Cluster':
+    dataset_suffix = 'CP_FGM_5VPS'
+    parameters_suffix = f'cp_r_{frame.lower()}'
+
+  result = {}
+
+  result['title'] = f'CDAWeb {frame} ({sc} {dataset_suffix})'
+  result['fname'] = f'separation_CDAWeb_{frame}_{dataset_suffix}'
+
+  hxform.xprint('')
+  hxform.xprint(result['title'])
+
+
+  times = []
+  positions = []
+  dfs = []
+
+  for s in range(1, 5):
+    if sc == 'MMS':
+      dataset = f'{sc}{s}_{dataset_suffix}'
+      parameters = f'{sc.lower()}{s}_{parameters_suffix}'
+    if sc == 'Cluster':
+      dataset = f'C{s}_{dataset_suffix}'
+      parameters = f'sc_pos_xyz_{frame.lower()}__{dataset}'
+
+    print(f"  Getting CDAWeb {dataset} {parameters}...")
+
+    data, meta = hapi(server, dataset, parameters, start, stop, **opts)
+    times.append(hapitime2datetime(data['Time']))
+    positions.append(data[parameters])
+    dfs.append(pandas.DataFrame(data[parameters], columns=['x', 'y', 'z'], index=times[-1]))
+
+  # Keep only timestamps present in all four spacecraft so arrays are aligned.
+  time_to_idx = [{t: j for j, t in enumerate(t_arr)} for t_arr in times]
+  common_times = [t for t in times[0] if all(t in m for m in time_to_idx[1:])]
+
+  if len(common_times) == 0:
+    raise ValueError("No common timestamps across spacecraft for CDAWeb data.")
+  else:
+    hxform.xprint(f"  Found {len(common_times)}/{len(times[0])} common timestamps across spacecraft for CDAWeb data.")
+
+  for i in range(4):
+    idx = [time_to_idx[i][t] for t in common_times]
+    p_arr = np.asarray(positions[i])
+    times[i] = np.asarray(common_times)
+    positions[i] = p_arr[idx]
+
+  result['times'] = times
+  result['positions'] = positions
+  result['dfs'] = dfs
+
+  return result
+
+
+def _sscweb(sc, start, stop, frame):
+  server = 'http://hapi-server.org/servers/SSCWeb/hapi'
+
+  result = {}
+  result['title'] = f'SSCWeb {frame}'
+  result['fname'] = f'separation_SSCWeb_{frame}'
+
+  hxform.xprint('')
+  hxform.xprint(result['title'])
+
+  times = []
+  positions = []
+  dfs = []
+
+  if sc == 'Cluster':
+    sc = sc.lower()
+
+  for s in range(1, 5):
+    dataset    = f'{sc}{s}'
+    parameters = f'X_{frame},Y_{frame},Z_{frame}'
+
+    print(f"  Getting SSCWeb {dataset} {parameters}...")
+    data, meta = hapi(server, dataset, parameters, start, stop, **opts)
+
+    xyz = np.column_stack((data[f'X_{frame}'], data[f'Y_{frame}'], data[f'Z_{frame}']))
+
+    times.append(hapitime2datetime(data['Time']))
+
+    positions.append(xyz*R_E)
+    dfs.append(pandas.DataFrame(xyz*R_E, columns=['x', 'y', 'z'], index=times[-1]))
+
+  result['times'] = times
+  result['positions'] = positions
+  result['dfs'] = dfs
+
+  return result
+
+sc = 'Cluster'
+#sc = 'MMS'
 
 if sc == 'MMS':
   start = '2016-09-14'
@@ -106,13 +203,6 @@ if sc == 'MMS':
   # "Its four spacecraft are flying only four-and-a-half miles apart" => 7.24 km
   angle = 7.24/(8.79*CFG['R_E'])
   hxform.xprint(f"4.5 miles ({7.24} km) separation => {np.degrees(angle):.2e} deg at 8.79 R_E")
-
-  dataset_suffix = 'MEC_SRVY_L2_EPHT89D'
-  parameters_suffix = f'mec_r_{frame_cdaweb.lower()}'
-
-  # EPD data has time stamps that differ between s/c
-  #dataset = f'{sc.upper()}_EPD-EIS_SRVY_L2_ELECTRONENERGY'
-  #parameters = f'{sc}_epd_eis_srvy_l2_electronenergy_position_{frame_cdaweb.lower()}'
 
   """
   https://www.nasa.gov/missions/mms/nasas-mms-achieves-closest-ever-flying-formation/
@@ -127,95 +217,42 @@ if sc == 'MMS':
   See also https://mmsvis.gsfc.nasa.gov/ for plots
   """
 
-
 if sc == 'Cluster':
   """
   https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2021JA029474
   "With careful maneuvering and monitoring the team managed to achieve a
-  separation of 4 km between Cluster 3 and Cluster 4 on September 19, 2013."
+  separation of 4 km between Cluster 3 and Cluster 4 on September 19, 2013.
+  This firstachievement paved the way to future tight formations to study the
+  Earth's bow shock at even smaller scales: with 3 km separation reached in
+  January 2016 and 2.5 km achieved in December 2018. This is the smallest
+  distance ever achieved between two magnetospheric spacecraft without active
+  ranging or GPS receivers.
   """
-  start = '2013-09-19'
-  stop  = '2016-09-20'
-  dataset_suffix = 'CP_FGM_5VPS'
-  parameters_suffix = f'cp_r_{frame_cdaweb.lower()}'
 
+  #start = '2013-09-19'
+  #stop  = '2013-09-20'
+  start = '2016-01-01'
+  stop  = '2016-02-01'
+  start = '2018-12-01'
+  stop  = '2019-01-01'
 
-print("Start: {start}, Stop: {stop}".format(start=start, stop=stop))
+hxform.xprint(f"Start: {start}, Stop: {stop}")
 
-title = f'CDAWeb {frame_cdaweb} ({sc} {dataset_suffix})'
-fname = f'{sc.lower()}_separation_CDAWeb_{frame_cdaweb}_{dataset_suffix}'
-
-hxform.xprint('')
-hxform.xprint(title)
-
-times = {'cdaweb': [], 'sscweb': []}
-positions = {'cdaweb': [], 'sscweb': []}
-dfs = {'cdaweb': [], 'sscweb': []}
-
-for s in range(1, 5):
-  if sc == 'MMS':
-    dataset = f'{sc}{s}_{dataset_suffix}'
-    parameters = f'{sc.lower()}{s}_{parameters_suffix}'
-  if sc == 'Cluster':
-    dataset = f'C{s}_{dataset_suffix}'
-    parameters = f'sc_pos_xyz_{frame_cdaweb.lower()}__{dataset}'
-
-  print(f"  Getting CDAWeb {dataset} {parameters}...")
-
-  data, meta = hapi(server, dataset, parameters, start, stop, **opts)
-  times['cdaweb'].append(hapitime2datetime(data['Time']))
-  positions['cdaweb'].append(data[parameters])
-  dfs['cdaweb'].append(pandas.DataFrame(data[parameters], columns=['x', 'y', 'z'], index=times['cdaweb'][-1]))
-
-print('x')
-# Keep only timestamps present in all four spacecraft so arrays are aligned.
-# Use index maps to avoid repeated np.isin scans.
-time_to_idx = [{t: j for j, t in enumerate(t_arr)} for t_arr in times['cdaweb']]
-common_times = [t for t in times['cdaweb'][0] if all(t in m for m in time_to_idx[1:])]
-
-if len(common_times) == 0:
-  raise ValueError("No common timestamps across spacecraft for CDAWeb data.")
-else:
-  hxform.xprint(f"  Found {len(common_times)}/{len(times['cdaweb'][0])} common timestamps across spacecraft for CDAWeb data.")
-
-for i in range(4):
-  idx = [time_to_idx[i][t] for t in common_times]
-  p_arr = np.asarray(positions['cdaweb'][i])
-  times['cdaweb'][i] = np.asarray(common_times)
-  positions['cdaweb'][i] = p_arr[idx]
-print('y')
-
-report(sc, times['cdaweb'], positions['cdaweb'], title, fname)
-
-exit()
-
-server = 'http://hapi-server.org/servers/SSCWeb/hapi'
+#frame = 'GSM'
+#frame_cdaweb = 'ECI'
+frame_cdaweb = 'GSE'
 if frame_cdaweb == 'ECI':
   frame_sscweb = 'J2K'
 else:
   frame_sscweb = frame_cdaweb
 
-title = f'SSCWeb {frame_sscweb}'
 
-hxform.xprint('')
-hxform.xprint(title)
+cdaweb = _cdaweb(sc, start, stop, frame_cdaweb)
+report(sc, cdaweb['times'], cdaweb['positions'], cdaweb['title'], cdaweb['fname'])
 
-for s in range(1, 5):
-  dataset    = f'{sc}{s}'
-  parameters = f'X_{frame_sscweb},Y_{frame_sscweb},Z_{frame_sscweb}'
+sscweb = _sscweb(sc, start, stop, frame_sscweb)
+report(sc, sscweb['times'], sscweb['positions'], sscweb['title'], sscweb['fname'])
 
-  print(f"  Getting SSCWeb {dataset} {parameters}...")
-  data, meta = hapi(server, dataset, parameters, start, stop, **opts)
-
-  xyz = np.column_stack((data[f'X_{frame_sscweb}'], data[f'Y_{frame_sscweb}'], data[f'Z_{frame_sscweb}']))
-
-  times['sscweb'].append(hapitime2datetime(data['Time']))
-  positions['sscweb'].append(xyz*R_E)
-  dfs['sscweb'].append(pandas.DataFrame(xyz*R_E, columns=['x', 'y', 'z'], index=times['sscweb'][-1]))
-
-fname = f'{sc}_separation_' + title.replace(" ", "_").replace("(", "").replace(")", "")
-
-report(times['sscweb'], positions['sscweb'], title, fname)
 
 hxform.xprint('')
 hxform.xprint('First few timestamps and positions for each source:')
@@ -227,8 +264,15 @@ for i in range(4):
   hxform.xprint(40*'-')
 
   # Show first few lines of each dataframe
-  hxform.xprint(f"CDAWeb {frame_cdaweb} {dataset_suffix}:")
-  hxform.xprint(dfs['cdaweb'][i].head())
+  hxform.xprint(f"CDAWeb {frame_cdaweb}:")
+  hxform.xprint(cdaweb['dfs'][i].head())
 
   hxform.xprint(f"\nSSCWeb {frame_sscweb}:")
-  hxform.xprint(dfs['sscweb'][i].head())
+  hxform.xprint(sscweb['dfs'][i].head())
+
+
+# Move separation.log to fname.log
+fname_log = os.path.join(CFG['cache_dir'], 'separation', sc.lower(), 'separation.log')
+os.rename('separation.log', fname_log)
+
+
