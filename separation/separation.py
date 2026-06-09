@@ -222,19 +222,26 @@ if sc == 'Cluster':
   https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2021JA029474
   "With careful maneuvering and monitoring the team managed to achieve a
   separation of 4 km between Cluster 3 and Cluster 4 on September 19, 2013.
-  This firstachievement paved the way to future tight formations to study the
+  This first achievement paved the way to future tight formations to study the
   Earth's bow shock at even smaller scales: with 3 km separation reached in
   January 2016 and 2.5 km achieved in December 2018. This is the smallest
   distance ever achieved between two magnetospheric spacecraft without active
   ranging or GPS receivers.
   """
 
-  #start = '2013-09-19'
-  #stop  = '2013-09-20'
-  start = '2016-01-01'
-  stop  = '2016-02-01'
-  start = '2018-12-01'
-  stop  = '2019-01-01'
+
+  start = '2013-09-19'
+  stop  = '2013-09-20'
+  # Output: (Note that reference says Cluster 3 and 4.)
+  # Cluster1-Cluster3
+  #  Minimum separation distance and angle: 3.95 km and 3.58e-03 deg at 2013-09-19T09:12:27.700000
+  # Cluster3-Cluster4
+  #  Minimum separation distance and angle: 25.02 km and 2.27e-02 deg at 2013-09-19T08:59:43.100000
+
+  #start = '2016-01-01'
+  #stop  = '2016-02-01'
+  #start = '2018-12-01'
+  #stop  = '2019-01-01'
 
 hxform.xprint(f"Start: {start}, Stop: {stop}")
 
@@ -273,6 +280,5 @@ for i in range(4):
 
 # Move separation.log to fname.log
 fname_log = os.path.join(CFG['cache_dir'], 'separation', sc.lower(), 'separation.log')
+hxform.xprint(f"Moving separation.log to {fname_log}")
 os.rename('separation.log', fname_log)
-
-
