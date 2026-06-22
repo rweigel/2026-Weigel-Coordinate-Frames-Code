@@ -179,7 +179,6 @@ def _plot_xyz(ax, info1, info2, t, r_ave):
     ax.plot(info2['time'], info2['xyz'][:,c],
             label=label2, lw=3, linestyle='--', color=colors[c])
 
-  #label = '$\\overline{r}$'
   r_ave_line, = ax.plot(t, r_ave, lw=2, linestyle='-', color='k')
 
   #_adjust_y_range(ax, gap_fraction=1)
@@ -189,14 +188,36 @@ def _plot_xyz(ax, info1, info2, t, r_ave):
   lkw = {**CFG['plot_opts']['legend_kwargs'], 'ncols': 3}
   ax.legend(**lkw)
 
-  # Short black line + textbox label for r_ave in the lower left
-  ax.plot([0.02, 0.06], [0.08, 0.08], color='k', lw=2,
-          transform=ax.transAxes, clip_on=False, solid_capstyle='butt')
-  ax.annotate('$\\overline{r}$',
-              xy=(0.07, 0.08), xycoords='axes fraction',
-              va='center', ha='left',
-              fontsize=CFG['plot_opts']['fontsize'],
-              bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none'))
+  if info1['dataset'] == 'geotail':
+    # Short black line + textbox label for r_ave at y = 25 and x = 2021-11-28
+    import datetime
+    t = [datetime.datetime(2021, 11, 28, 0, 0, 0), datetime.datetime(2021, 11, 28, 14, 0, 0)]
+    ta = datetime.datetime(2021, 11, 28, 19, 0, 0)
+    ax.plot(t, [25, 25], color='k', lw=2, clip_on=False, solid_capstyle='butt')
+    ax.annotate('$\\overline{r}$',
+                xy=(ta, 25), xycoords='data',
+                va='center', ha='left',
+                fontsize=CFG['plot_opts']['fontsize'],
+                bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none'))
+  elif info1['dataset'] == 'mms2':
+    import datetime
+    t = [datetime.datetime(2016, 9, 1, 8, 0, 0), datetime.datetime(2016, 9, 1, 9, 0, 0)]
+    ta = datetime.datetime(2016, 9, 1, 10, 0, 0)
+    ax.plot(t, [10, 10], color='k', lw=2, clip_on=False, solid_capstyle='butt')
+    ax.annotate('$\\overline{r}$',
+                xy=(ta, 10), xycoords='data',
+                va='center', ha='left',
+                fontsize=CFG['plot_opts']['fontsize'],
+                bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none'))
+  else:
+    # Short black line + textbox label for r_ave in the lower left
+    ax.plot([0.02, 0.06], [0.08, 0.08], color='k', lw=2,
+            transform=ax.transAxes, clip_on=False, solid_capstyle='butt')
+    ax.annotate('$\\overline{r}$',
+                xy=(0.07, 0.08), xycoords='axes fraction',
+                va='center', ha='left',
+                fontsize=CFG['plot_opts']['fontsize'],
+                bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none'))
 
   ax.set_xticklabels([])
 

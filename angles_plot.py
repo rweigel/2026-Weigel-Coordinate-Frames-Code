@@ -115,8 +115,8 @@ data = utilrsw.read(in_file)
 for transform_key in list(data.keys()):
   df = data[transform_key]
   frames = transform_key.split('_')
-  frame1 = frames[0]
-  frame2 = frames[1]
+  frame1 = f"\\mathtt{{{frames[0]}}}"
+  frame2 = f"\\mathtt{{{frames[1]}}}"
   axis = axis.upper()
   pair = f"(${axis}_{{{frame1}}}$, ${axis}_{{{frame2}}}$)"
   tranform_str = fr"$\angle$ {pair}"
